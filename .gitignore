@@ -1,0 +1,78 @@
+HELP.md
+target/
+.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### VS Code ###
+.vscode/
+
+# Java & Maven/Gradle
+/target/
+/build/
+/.gradle/
+/out/
+/!gradle/wrapper/gradle-wrapper.jar
+.gradle/
+/**/logs/
+
+# Eclipse
+*.classpath
+*.project
+*.settings/
+
+# IntelliJ
+/*.iml
+/.idea/
+/out/
+
+# VS Code
+.vscode/
+
+# Spring Boot & Configuration
+/spring.log
+
+# Docker
+/data/
+**/data/**
+
+# Redis & MySQL Data Volumes
+redis-data/
+/mysql-data/
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Misc
+*.swp
+*.tmp
