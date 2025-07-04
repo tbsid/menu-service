@@ -38,3 +38,13 @@ documentation:
       name: "public"
       paths-to-match:
         - "/api/**"
+
+management:
+  info:
+    git:
+      mode: full
+  endpoints:
+    web:
+      base-path: /api/v1
+      exposure:
+        include: info, health, metrics
