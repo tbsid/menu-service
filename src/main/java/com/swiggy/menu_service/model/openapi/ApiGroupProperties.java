@@ -1,4 +1,4 @@
-package com.swiggy.menu_service.config.model;
+package com.swiggy.menu_service.model.openapi;
 
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;

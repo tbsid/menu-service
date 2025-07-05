@@ -1,7 +1,5 @@
 package com.swiggy.menu_service.enums;
 
-import com.swiggy.menu_service.exception.ErrorType;
-
 public enum ValidationError {
 
     // 400 Bad Request - Input Validation Errors

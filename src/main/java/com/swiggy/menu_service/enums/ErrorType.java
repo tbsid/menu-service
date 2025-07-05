@@ -1,4 +1,4 @@
-package com.swiggy.menu_service.exception;
+package com.swiggy.menu_service.enums;
 
 public enum ErrorType {
 

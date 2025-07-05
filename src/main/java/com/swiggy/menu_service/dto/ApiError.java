@@ -1,6 +1,7 @@
-package com.swiggy.menu_service.exception;
+package com.swiggy.menu_service.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.swiggy.menu_service.enums.ErrorType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

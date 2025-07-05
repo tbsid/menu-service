@@ -39,7 +39,7 @@ public class Restaurant {
     @Column(nullable = false, length = 100)
     private String email;
 
-    @Column(nullable = false, length = 50)
+    @Column(nullable = false, length = 100)
     private String contactPerson;
 
     @Column(nullable = false, length = 10)
