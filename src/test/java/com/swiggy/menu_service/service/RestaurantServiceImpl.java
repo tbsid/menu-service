@@ -159,7 +159,7 @@ class RestaurantServiceImplTest {
         MenuItemResponseDto itemDto = new MenuItemResponseDto(
                 100L,
                 "Paneer Tikka",
-                BigDecimal.valueOf(250),
+                BigDecimal.valueOf(199),
                 MenuItemStatus.AVAILABLE,
                 FoodType.VEG,
                 Category.STARTER
