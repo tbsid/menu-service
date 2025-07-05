@@ -1,7 +1,6 @@
 package com.swiggy.menu_service.service.impl;
 
 import com.swiggy.menu_service.dto.request.RestaurantRequestDto;
-import com.swiggy.menu_service.dto.response.MenuItemResponseDto;
 import com.swiggy.menu_service.dto.response.MenuResponseDto;
 import com.swiggy.menu_service.dto.response.RestaurantMenuResponseDto;
 import com.swiggy.menu_service.dto.response.RestaurantResponseDto;
@@ -9,7 +8,6 @@ import com.swiggy.menu_service.enums.ValidationError;
 import com.swiggy.menu_service.exception.ApplicationException;
 import com.swiggy.menu_service.mapper.RestaurantMapper;
 import com.swiggy.menu_service.model.Menu;
-import com.swiggy.menu_service.model.MenuItem;
 import com.swiggy.menu_service.model.Restaurant;
 import com.swiggy.menu_service.repository.MenuItemRepository;
 import com.swiggy.menu_service.repository.MenuRepository;
@@ -70,9 +68,18 @@ public class RestaurantServiceImpl implements RestaurantService {
         log.info("Fetching menu by restaurant ID: {} from the database", restaurantId);
         Restaurant restaurant = restaurantRepository.findById(restaurantId)
                 .orElseThrow(() -> new ApplicationException(ValidationError.ENTITY_NOT_FOUND, "Restaurant not found with id: " + restaurantId));
-        List<MenuResponseDto> menuResponseDto = mapper.createMenuResponseDto(restaurant.getMenus());
+        List<MenuResponseDto> menuResponseDto = mapper.createMenuResponseDtoList(restaurant.getMenus());
         log.info("Menu response dto list created successfully");
         return new RestaurantMenuResponseDto(restaurant.getId(), restaurant.getName(), menuResponseDto);
+    }
+
+    @Override
+    public MenuResponseDto getMenuByRestaurantIdAndMenuId(Long restaurantId, Long menuId) {
+        log.info("Get menu by restaurant id and menu id request received");
+        Menu menu = menuRepository.findByIdAndRestaurantId(menuId, restaurantId)
+                .orElseThrow(() -> new ApplicationException(ValidationError.ENTITY_NOT_FOUND, "Menu not found with id: " + menuId + " for restaurant id: " + restaurantId));
+        log.info("Successfully fetched menu by restaurant id from the database");
+        return mapper.mapMenuToResponseDto(menu);
     }
 
     @Override
@@ -82,6 +89,10 @@ public class RestaurantServiceImpl implements RestaurantService {
 
     @Override
     public void deleteRestaurant(Long restaurantId) {
-
+        log.info("Deleting restaurant with id {} from the database", restaurantId);
+        Restaurant restaurant = restaurantRepository.findById(restaurantId)
+                .orElseThrow(() -> new ApplicationException(ValidationError.ENTITY_NOT_FOUND, "Restaurant not found with id: " + restaurantId));
+        restaurantRepository.delete(restaurant);
+        log.info("Successfully deleted restaurant with id {} from the database", restaurantId);
     }
 }

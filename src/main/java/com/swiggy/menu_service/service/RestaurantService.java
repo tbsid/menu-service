@@ -11,6 +11,8 @@ public interface RestaurantService {
 
     RestaurantMenuResponseDto getMenuByRestaurantId(Long restaurantId);
 
+    MenuResponseDto getMenuByRestaurantIdAndMenuId(Long restaurantId, Long menuId);
+
     RestaurantResponseDto updateRestaurantMenu(Long restaurantId, RestaurantRequestDto request);
 
     void deleteRestaurant(Long restaurantId);

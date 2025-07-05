@@ -76,23 +76,35 @@ public class RestaurantMapper {
         return itemList;
     }
 
-    public List<MenuResponseDto> createMenuResponseDto(List<Menu> menuList) {
+    public List<MenuResponseDto> createMenuResponseDtoList(List<Menu> menuList) {
         log.info("Creating menu response dto from Menu list");
-        return menuList
-                .stream()
-                .map(menu -> new MenuResponseDto(
-                        menu.getId(),
-                        menu.getName(),
-                        menu.getStatus(),
-                        menu.getDescription(),
-                        menu.getMenuItems().stream().map(item -> new MenuItemResponseDto(
-                                item.getId(),
-                                item.getName(),
-                                item.getPrice(),
-                                item.getStatus(),
-                                item.getFoodType(),
-                                item.getCategory()
-                        )).toList()
-                )).toList();
+        return menuList.stream()
+                .map(this::mapMenuToResponseDto)
+                .toList();
+    }
+
+    public MenuResponseDto mapMenuToResponseDto(Menu menu) {
+        log.info("Mapping menu to restaurant response dto");
+        return new MenuResponseDto(
+                menu.getId(),
+                menu.getName(),
+                menu.getStatus(),
+                menu.getDescription(),
+                menu.getMenuItems().stream()
+                        .map(this::mapMenuItemToResponseDto)
+                        .toList()
+        );
+    }
+
+    private MenuItemResponseDto mapMenuItemToResponseDto(MenuItem item) {
+        log.info("Mapping menu item to menu item response dto");
+        return new MenuItemResponseDto(
+                item.getId(),
+                item.getName(),
+                item.getPrice(),
+                item.getStatus(),
+                item.getFoodType(),
+                item.getCategory()
+        );
     }
 }

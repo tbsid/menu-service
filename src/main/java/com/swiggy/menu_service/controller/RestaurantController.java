@@ -1,12 +1,10 @@
 package com.swiggy.menu_service.controller;
 
 import com.swiggy.menu_service.dto.request.RestaurantRequestDto;
-import com.swiggy.menu_service.dto.response.MenuResponseDto;
 import com.swiggy.menu_service.dto.response.RestaurantMenuResponseDto;
 import com.swiggy.menu_service.dto.response.RestaurantResponseDto;
 import com.swiggy.menu_service.service.RestaurantService;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
