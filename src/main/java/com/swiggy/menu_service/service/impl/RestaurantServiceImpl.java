@@ -21,6 +21,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -59,8 +61,8 @@ public class RestaurantServiceImpl implements RestaurantService {
     }
 
     @Override
-    public RestaurantMenuResponseDto getMenuByRestaurantId(Long restaurantId) {
-        log.info("Get menu by restaurant id received");
+    public RestaurantMenuResponseDto getMenuByRestaurantId(Long restaurantId, int page, int size) {
+        log.info("Fetching paginated menu items for restaurant id {} page {} size {}", restaurantId, page, size);
 
         //Step 1: Look for the menu in application cache
         //TODO: to be implemented
@@ -69,12 +71,21 @@ public class RestaurantServiceImpl implements RestaurantService {
         //TODO: to be implemented
 
         //Step 3: If not found in the redis cache - Look for the menu in the database
-        log.info("Fetching menu by restaurant ID: {} from the database", restaurantId);
         Restaurant restaurant = restaurantRepository.findById(restaurantId)
                 .orElseThrow(() -> new ApplicationException(ValidationError.ENTITY_NOT_FOUND, "Restaurant not found with id: " + restaurantId));
-        List<MenuResponseDto> menuResponseDto = mapper.createMenuResponseDtoList(restaurant.getMenus());
-        log.info("Menu response dto list created successfully");
-        return new RestaurantMenuResponseDto(restaurant.getId(), restaurant.getName(), menuResponseDto);
+
+        Page<Menu> pagedMenus = menuRepository.findByRestaurantId(restaurantId, PageRequest.of(page, size));
+        List<MenuResponseDto> menuDtos = mapper.createMenuResponseDtoList(pagedMenus.getContent());
+
+        return new RestaurantMenuResponseDto(
+                restaurant.getId(),
+                restaurant.getName(),
+                menuDtos,
+                pagedMenus.getNumber(),
+                pagedMenus.getSize(),
+                pagedMenus.getTotalElements(),
+                pagedMenus.getTotalPages()
+        );
     }
 
     @Override
