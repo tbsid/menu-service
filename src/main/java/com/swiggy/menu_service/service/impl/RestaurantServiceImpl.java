@@ -1,6 +1,9 @@
 package com.swiggy.menu_service.service.impl;
 
+import com.swiggy.menu_service.dto.request.MenuItemRequestDto;
+import com.swiggy.menu_service.dto.request.MenuRequestDto;
 import com.swiggy.menu_service.dto.request.RestaurantRequestDto;
+import com.swiggy.menu_service.dto.response.MenuItemResponseDto;
 import com.swiggy.menu_service.dto.response.MenuResponseDto;
 import com.swiggy.menu_service.dto.response.RestaurantMenuResponseDto;
 import com.swiggy.menu_service.dto.response.RestaurantResponseDto;
@@ -8,6 +11,7 @@ import com.swiggy.menu_service.enums.ValidationError;
 import com.swiggy.menu_service.exception.ApplicationException;
 import com.swiggy.menu_service.mapper.RestaurantMapper;
 import com.swiggy.menu_service.model.Menu;
+import com.swiggy.menu_service.model.MenuItem;
 import com.swiggy.menu_service.model.Restaurant;
 import com.swiggy.menu_service.repository.MenuItemRepository;
 import com.swiggy.menu_service.repository.MenuRepository;
@@ -28,10 +32,10 @@ public class RestaurantServiceImpl implements RestaurantService {
 
     private static final Logger log = LoggerFactory.getLogger(RestaurantServiceImpl.class);
 
-    private final RestaurantMapper mapper;
     private final RestaurantRepository restaurantRepository;
     private final MenuRepository menuRepository;
     private final MenuItemRepository menuItemRepository;
+    private final RestaurantMapper mapper;
 
     @Override
     @Transactional
@@ -83,11 +87,6 @@ public class RestaurantServiceImpl implements RestaurantService {
     }
 
     @Override
-    public RestaurantResponseDto updateRestaurantMenu(Long restaurantId, RestaurantRequestDto request) {
-        return null;
-    }
-
-    @Override
     public void deleteRestaurant(Long restaurantId) {
         log.info("Deleting restaurant with id {} from the database", restaurantId);
         Restaurant restaurant = restaurantRepository.findById(restaurantId)
@@ -95,4 +94,62 @@ public class RestaurantServiceImpl implements RestaurantService {
         restaurantRepository.delete(restaurant);
         log.info("Successfully deleted restaurant with id {} from the database", restaurantId);
     }
+
+    @Override
+    public RestaurantResponseDto updateRestaurantMenu(Long restaurantId, RestaurantRequestDto request) {
+        log.info("Update restaurant menu request received for restaurant id {}", restaurantId);
+
+        Restaurant restaurant = restaurantRepository.findById(restaurantId)
+                .orElseThrow(() -> new ApplicationException(ValidationError.ENTITY_NOT_FOUND, "Restaurant not found with id: " + restaurantId));
+
+        List<Menu> updatedMenus = mapper.createMenuList(request, restaurant);
+        List<Menu> existingMenus = restaurant.getMenus();
+        existingMenus.clear();
+        existingMenus.addAll(updatedMenus);
+        log.info("Existing menus replaced with updated list for restaurant id {}", restaurantId);
+
+        restaurantRepository.save(restaurant);
+        log.info("Successfully updated menu for restaurant id {}", restaurantId);
+
+        return new RestaurantResponseDto(restaurant.getId(), restaurant.getName(), "Restaurant menu updated successfully", HttpStatus.OK);
+    }
+
+    @Override
+    public MenuResponseDto updateMenuById(Long restaurantId, Long menuId, MenuRequestDto request) {
+        log.info("Update menu request received for restaurant id {} and menu id {}", restaurantId, menuId);
+
+        Menu menu = menuRepository.findByIdAndRestaurantId(menuId, restaurantId)
+                .orElseThrow(() -> new ApplicationException(ValidationError.ENTITY_NOT_FOUND,
+                        "Menu not found with id: " + menuId + " for restaurant id: " + restaurantId));
+
+        mapper.updateMenuFromRequest(menu, request);
+
+        menuRepository.save(menu);
+        log.info("Successfully updated menu with id {}", menuId);
+
+        return mapper.mapMenuToResponseDto(menu);
+    }
+
+    @Override
+    public MenuItemResponseDto updateMenuItemById(Long menuItemId, MenuItemRequestDto request) {
+        log.info("Update menu item request received for menu item id {}", menuItemId);
+
+        MenuItem item = menuItemRepository.findById(menuItemId)
+                .orElseThrow(() -> new ApplicationException(ValidationError.ENTITY_NOT_FOUND,
+                        "Menu item not found with id: " + menuItemId));
+
+        mapper.updateMenuItemFromRequest(item, request);
+        menuItemRepository.save(item);
+        log.info("Successfully updated menu item with id {}", menuItemId);
+
+        return new MenuItemResponseDto(
+                item.getId(),
+                item.getName(),
+                item.getPrice(),
+                item.getStatus(),
+                item.getFoodType(),
+                item.getCategory()
+        );
+    }
+
 }

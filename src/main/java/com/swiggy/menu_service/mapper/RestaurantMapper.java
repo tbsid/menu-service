@@ -107,4 +107,35 @@ public class RestaurantMapper {
                 item.getCategory()
         );
     }
+
+    public void updateMenuFromRequest(Menu menu, MenuRequestDto request) {
+        log.info("Mapping MenuRequestDto to Menu entity");
+        menu.setName(request.getName());
+        menu.setDescription(request.getDescription());
+        menu.setStatus(request.getStatus());
+
+        menu.getMenuItems().clear();
+        List<MenuItem> updatedItems = request.getMenuItems().stream().map(itemReq -> MenuItem.builder()
+                .name(itemReq.getName())
+                .description(itemReq.getDescription())
+                .price(itemReq.getPrice())
+                .status(itemReq.getStatus())
+                .foodType(itemReq.getFoodType())
+                .category(itemReq.getCategory())
+                .imageUrl(itemReq.getImageUrl())
+                .menu(menu)
+                .build()).toList();
+        menu.setMenuItems(updatedItems);
+    }
+
+    public void updateMenuItemFromRequest(MenuItem item, MenuItemRequestDto request) {
+        log.info("Mapping MenuItemRequestDto to MenuItem entity");
+        item.setName(request.getName());
+        item.setDescription(request.getDescription());
+        item.setPrice(request.getPrice());
+        item.setStatus(request.getStatus());
+        item.setFoodType(request.getFoodType());
+        item.setCategory(request.getCategory());
+        item.setImageUrl(request.getImageUrl());
+    }
 }
