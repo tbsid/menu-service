@@ -12,5 +12,9 @@ public class RestaurantMenuResponseDto {
     private Long restaurantId;
     private String restaurantName;
     private List<MenuResponseDto> menus;
+    private int currentPage;
+    private int pageSize;
+    private long totalElements;
+    private int totalPages;
 
 }

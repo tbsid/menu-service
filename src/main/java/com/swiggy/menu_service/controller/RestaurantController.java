@@ -37,8 +37,10 @@ public class RestaurantController {
     }
 
     @GetMapping("/{id}/menu")
-    public ResponseEntity<RestaurantMenuResponseDto> getRestaurantMenu(@PathVariable Long id) {
-        RestaurantMenuResponseDto response = restaurantService.getMenuByRestaurantId(id);
+    public ResponseEntity<RestaurantMenuResponseDto> getRestaurantMenu(@PathVariable Long id,
+                                                                       @RequestParam(defaultValue = "0") int page,
+                                                                       @RequestParam(defaultValue = "10") int size) {
+        RestaurantMenuResponseDto response = restaurantService.getMenuByRestaurantId(id, page, size);
         return ResponseEntity.ok(response);
     }
 
@@ -53,7 +55,5 @@ public class RestaurantController {
         restaurantService.deleteRestaurant(id);
         return ResponseEntity.noContent().build();
     }
-
-
 
 }

@@ -23,7 +23,7 @@ spring:
     redis:
       host: localhost
       port: 6379
-      password: # leave empty if no password is set in docker-compose.yml
+      password:
       database: 0
       timeout: 60000
 
@@ -33,7 +33,7 @@ documentation:
     description: "API documentation for Menu Service"
     version: "1.0"
     contact-name: "Development Team"
-    contact-email: "dev@example.com"
+    contact-email: "dev@swiggy.com"
     group:
       name: "public"
       paths-to-match:

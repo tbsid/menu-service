@@ -12,7 +12,7 @@ public interface RestaurantService {
 
     RestaurantResponseDto createRestaurantWithMenu(RestaurantRequestDto restaurantRequestDto);
 
-    RestaurantMenuResponseDto getMenuByRestaurantId(Long restaurantId);
+    RestaurantMenuResponseDto getMenuByRestaurantId(Long restaurantId, int page, int size);
 
     MenuResponseDto getMenuByRestaurantIdAndMenuId(Long restaurantId, Long menuId);
 
