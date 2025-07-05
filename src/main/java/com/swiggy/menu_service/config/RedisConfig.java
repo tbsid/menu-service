@@ -8,5 +8,7 @@ import org.springframework.data.redis.repository.configuration.EnableRedisReposi
 @EnableRedisRepositories
 @ConditionalOnProperty(name = "spring.data.redis.enabled", havingValue = "true", matchIfMissing = true)
 public class RedisConfig {
-    // Redis configuration will be picked up from application.yml
+
+    //TODO: Redis features to be implemented
+
 }
