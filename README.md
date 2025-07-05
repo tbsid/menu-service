@@ -28,10 +28,17 @@ cd menu-service
 
 ### 2. Start Infrastructure Services
 
+First, if you have any existing containers from previous runs, clean them up:
+
+```bash
+# Stop and remove containers, networks, and volumes specific to this project
+docker compose down -v
+```
+
 The application requires MySQL and Redis. Start them using Docker Compose:
 
 ```bash
-docker-compose up -d
+docker compose up -d
 ```
 
 This will start:
@@ -40,33 +47,60 @@ This will start:
 
 ### 3. Database Setup
 
-The database will be automatically created by Docker Compose with:
+The database will be automatically created and initialized by Docker Compose with:
 - Database name: menu_service
 - Username: menu_user
 - Password: menu_password
 
-#### 3.1 Create Schema
-Presently, in the `dev` environment, the application uses hibernate setting `ddl-auto: update`
-This will create the schema automatically on application start-up by JPA and initial data will be loaded from:
+The following operations will be performed automatically when the MySQL container starts:
+1. Database creation using the provided credentials
+2. Schema creation using `src/main/resources/database-scripts/01-create-schema.sql`
+3. Sample data insertion using `src/main/resources/database-scripts/02-mock-data.sql`
 
-##### (Optional)
-However, if you wish to change `ddl-auto` to `none` or `validate`
-you can create the schema manually with DDL scripts, run the create schema script -
-- `src/main/resources/database-scripts/01-create-schema.sql`
+Note: If you need to reinitialize the database:
+```bash
+# Stop containers and remove volumes
+docker compose down -v
 
-#### 3.2 Insert Sample Data (Optional)
-- `src/main/resources/database-scripts/02-mock-data.sql`
+# Start services again
+docker compose up -d
+```
 
 ### 4. Build and Run
 
-#### Using Maven
+#### Option 1: Using Docker Compose (Recommended)
+
+To run the entire application stack (Menu Service, MySQL, and Redis):
+
+```bash
+# Build and start all services
+docker compose up --build
+
+# To run in detached mode
+docker compose up -d --build
+```
+
+The application and all its dependencies will start in the correct order:
+1. MySQL database will start and initialize with schema and sample data
+2. Redis cache server will start
+3. Menu Service application will start after MySQL and Redis are healthy
+
+To stop all services:
+```bash
+docker compose down
+
+# To stop and remove all data (including database)
+docker compose down -v
+```
+
+#### Option 2: Using Maven (Development)
 
 ```bash
 ./mvnw clean install
 ./mvnw spring-boot:run -Pdev
 ```
 
-#### Using Docker
+#### Option 3: Using Docker Manually
 
 ```bash
 docker build -t menu-service .
