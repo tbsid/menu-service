@@ -68,7 +68,30 @@ docker compose up -d
 
 ### 4. Build and Run
 
-#### Option 1: Using Docker Compose (Recommended)
+#### Option 1: Local Development with Docker Dependencies (Recommended for Development)
+
+This option runs MySQL and Redis in Docker while running the application locally with Maven:
+
+```bash
+# Start only MySQL and Redis
+docker compose -f docker-compose.dev.yml up -d
+
+# Wait for services to be healthy
+docker compose -f docker-compose.dev.yml ps
+
+# Run the application locally
+./mvnw spring-boot:run -Pdev
+```
+
+To stop the infrastructure services:
+```bash
+docker compose -f docker-compose.dev.yml down
+
+# To remove all data (including database)
+docker compose -f docker-compose.dev.yml down -v
+```
+
+#### Option 2: Full Docker Stack
 
 To run the entire application stack (Menu Service, MySQL, and Redis):
 
@@ -93,14 +116,14 @@ docker compose down
 docker compose down -v
 ```
 
-#### Option 2: Using Maven (Development)
+#### Option 3: Using Maven (Development)
 
 ```bash
 ./mvnw clean install
 ./mvnw spring-boot:run -Pdev
 ```
 
-#### Option 3: Using Docker Manually
+#### Option 4: Using Docker Manually
 
 ```bash
 docker build -t menu-service .
