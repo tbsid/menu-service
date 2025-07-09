@@ -40,7 +40,7 @@ public class RestaurantServiceImpl implements RestaurantService {
     private final RestaurantMapper mapper;
 
     @Override
-    @Transactional
+    @Transactional(Transactional.TxType.REQUIRED)
     public RestaurantResponseDto createRestaurantWithMenu(RestaurantRequestDto request) {
         log.info("Create restaurant with menu request received");
         try {
@@ -54,7 +54,6 @@ public class RestaurantServiceImpl implements RestaurantService {
             restaurantRepository.save(restaurant);
 
             return new RestaurantResponseDto(restaurant.getId(), restaurant.getName(), "Restaurant created successfully", HttpStatus.CREATED);
-
         } catch (Exception e) {
             throw new RuntimeException("Failed to create restaurant and menu: " + e.getMessage(), e);
         }
@@ -64,10 +63,10 @@ public class RestaurantServiceImpl implements RestaurantService {
     public RestaurantMenuResponseDto getMenuByRestaurantId(Long restaurantId, int page, int size) {
         log.info("Fetching paginated menu items for restaurant id {} page {} size {}", restaurantId, page, size);
 
-        //Step 1: Look for the menu in application cache
+        //Step 1: Look for the menu in application cache (l1 cache - caffeine)
         //TODO: to be implemented
 
-        //Step 2: If not found in application cache - Look for the menu in the distributed cache (redis)
+        //Step 2: If not found in application cache - Look for the menu in the L2 cache (redis)
         //TODO: to be implemented
 
         //Step 3: If not found in the redis cache - Look for the menu in the database
@@ -112,6 +111,11 @@ public class RestaurantServiceImpl implements RestaurantService {
 
         Restaurant restaurant = restaurantRepository.findById(restaurantId)
                 .orElseThrow(() -> new ApplicationException(ValidationError.ENTITY_NOT_FOUND, "Restaurant not found with id: " + restaurantId));
+
+        //Step2 : Update L1 cache Application
+
+
+        //Step 3: Update L2 cache Redis
 
         List<Menu> updatedMenus = mapper.createMenuList(request, restaurant);
         List<Menu> existingMenus = restaurant.getMenus();

@@ -26,27 +26,21 @@ VALUES
     ('Cafe Classics', 9, 'ACTIVE', 'Goodluck’s Irani special items', NOW(), NOW()),
     ('Continental Mains', 10, 'ACTIVE', 'Italian and continental mains', NOW(), NOW());
 
-
 -- ========= Sample Menu Items =========
-INSERT INTO menu_item (name, description, price, status, food_type, category, image_url, menu_id, created_at, updated_at)
+INSERT INTO menu_item (name, description, price, status, food_type, category, image_url, restaurant_id, menu_id, created_at, updated_at)
 VALUES
-    ('Masala Dosa', 'Crispy dosa with spiced potato filling', 80.00, 'AVAILABLE', 'VEG', 'MAIN_COURSE', NULL, 1, NOW(), NOW()),
-    ('Idli Sambar', 'Steamed rice cakes with lentil soup', 60.00, 'AVAILABLE', 'VEG', 'STARTER', NULL, 1, NOW(), NOW()),
-    ('Puran Poli', 'Sweet lentil stuffed flatbread', 55.00, 'AVAILABLE', 'VEG', 'DESSERT', NULL, 2, NOW(), NOW()),
-    ('Chicken Biryani', 'Hyderabadi style layered biryani', 180.00, 'AVAILABLE', 'NON_VEG', 'MAIN_COURSE', NULL, 3, NOW(), NOW()),
-    ('Paneer Tikka', 'Grilled cottage cheese cubes', 150.00, 'AVAILABLE', 'VEG', 'STARTER', NULL, 4, NOW(), NOW()),
-    ('Veg Sandwich', 'Grilled sandwich with vegetables', 90.00, 'AVAILABLE', 'VEG', 'SNACK', NULL, 5, NOW(), NOW()),
-    ('SP Special Biryani', 'Signature biryani from SP’s', 200.00, 'AVAILABLE', 'NON_VEG', 'MAIN_COURSE', NULL, 6, NOW(), NOW()),
-    ('Chicken Roll', 'Stuffed chicken in rumali roti', 120.00, 'AVAILABLE', 'NON_VEG', 'SNACK', NULL, 7, NOW(), NOW()),
-    ('Gulab Jamun', 'Soft round sweet soaked in syrup', 50.00, 'AVAILABLE', 'VEG', 'DESSERT', NULL, 8, NOW(), NOW()),
-    ('Bun Maska', 'Soft bun with butter', 40.00, 'AVAILABLE', 'VEG', 'SNACK', NULL, 9, NOW(), NOW()),
-    ('Pasta Alfredo', 'Creamy white sauce pasta', 170.00, 'AVAILABLE', 'VEG', 'MAIN_COURSE', NULL, 10, NOW(), NOW()),
-    ('Egg Curry', 'Boiled eggs in spicy gravy', 130.00, 'AVAILABLE', 'EGG', 'MAIN_COURSE', NULL, 3, NOW(), NOW()),
-    ('Medu Vada', 'Fried lentil fritters', 65.00, 'AVAILABLE', 'VEG', 'SNACK', NULL, 1, NOW(), NOW()),
-    ('Thalipeeth', 'Spicy multigrain flatbread', 75.00, 'AVAILABLE', 'VEG', 'MAIN_COURSE', NULL, 2, NOW(), NOW()),
-    ('Mutton Rogan Josh', 'Spicy Kashmiri mutton curry', 220.00, 'AVAILABLE', 'NON_VEG', 'MAIN_COURSE', NULL, 4, NOW(), NOW()),
-    ('Chocolate Ice Cream', 'Rich chocolate flavored scoop', 100.00, 'AVAILABLE', 'VEG', 'DESSERT', NULL, 8, NOW(), NOW()),
-    ('Filter Coffee', 'Strong South Indian style coffee', 40.00, 'AVAILABLE', 'VEG', 'BEVERAGE', NULL, 1, NOW(), NOW()),
-    ('Egg Roll', 'Egg wrapped in layered paratha', 90.00, 'AVAILABLE', 'EGG', 'SNACK', NULL, 7, NOW(), NOW()),
-    ('Caesar Salad', 'Lettuce, cheese and dressing', 140.00, 'AVAILABLE', 'VEG', 'SALAD', NULL, 10, NOW(), NOW()),
-    ('Fruit Custard', 'Seasonal fruits in creamy base', 110.00, 'AVAILABLE', 'VEG', 'DESSERT', NULL, 9, NOW(), NOW());
+    ('Masala Dosa', 'Crispy dosa with spiced potato filling', 80.00, 'AVAILABLE', 'VEG', 'MAIN_COURSE', NULL, 1, 1, NOW(), NOW()),
+    ('Idli Sambar', 'Steamed rice cakes with lentil soup', 60.00, 'AVAILABLE', 'VEG', 'STARTER', NULL, 1, 1, NOW(), NOW()),
+    ('Puran Poli', 'Sweet lentil stuffed flatbread', 55.00, 'AVAILABLE', 'VEG', 'DESSERT', NULL, 2, 2, NOW(), NOW()),
+    ('Chicken Biryani', 'Hyderabadi style layered biryani', 180.00, 'AVAILABLE', 'NON_VEG', 'MAIN_COURSE', NULL, 3, 3, NOW(), NOW()),
+    ('Paneer Tikka', 'Grilled cottage cheese cubes', 150.00, 'AVAILABLE', 'VEG', 'STARTER', NULL, 4, 4, NOW(), NOW()),
+    ('Veg Sandwich', 'Grilled sandwich with vegetables', 90.00, 'AVAILABLE', 'VEG', 'SNACK', NULL, 5, 5, NOW(), NOW()),
+    ('SP Special Biryani', 'Signature biryani from SP’s', 200.00, 'AVAILABLE', 'NON_VEG', 'MAIN_COURSE', NULL, 6, 6, NOW(), NOW()),
+    ('Chicken Roll', 'Stuffed chicken in rumali roti', 120.00, 'AVAILABLE', 'NON_VEG', 'SNACK', NULL, 7, 7, NOW(), NOW()),
+    ('Gulab Jamun', 'Soft round sweet soaked in syrup', 50.00, 'AVAILABLE', 'VEG', 'DESSERT', NULL, 8, 8, NOW(), NOW()),
+    ('Bun Maska', 'Soft bun with butter', 40.00, 'AVAILABLE', 'VEG', 'SNACK', NULL, 9, 9, NOW(), NOW()),
+    ('Pasta Alfredo', 'Creamy white sauce pasta', 170.00, 'AVAILABLE', 'VEG', 'MAIN_COURSE', NULL, 10, 10, NOW(), NOW()),
+    ('Egg Curry', 'Boiled eggs in spicy gravy', 130.00, 'AVAILABLE', 'EGG', 'MAIN_COURSE', NULL, 3, 3, NOW(), NOW()),
+    ('Medu Vada', 'Fried lentil fritters', 65.00, 'AVAILABLE', 'VEG', 'SNACK', NULL, 1, 1, NOW(), NOW()),
+    ('Thalipeeth', 'Spicy multigrain flatbread', 75.00, 'AVAILABLE', 'VEG', 'MAIN_COURSE', NULL, 2, 2, NOW(), NOW()),
+    ('Mutton Rogan Josh', 'Spicy Kashmiri mutton curry', 220.00, 'AVAILABLE', 'NON_VEG', 'MAIN_COURSE', NULL, 4, 4, NOW(), NOW());

@@ -69,6 +69,7 @@ public class RestaurantMapper {
                     .category(itemRequestDto.getCategory())
                     .imageUrl(itemRequestDto.getImageUrl())
                     .menu(menu)
+                    .restaurant(menu.getRestaurant())  // Add restaurant reference for denormalization
                     .build();
             itemList.add(item);
         }
@@ -124,6 +125,7 @@ public class RestaurantMapper {
                 .category(itemReq.getCategory())
                 .imageUrl(itemReq.getImageUrl())
                 .menu(menu)
+                .restaurant(menu.getRestaurant())  // Add restaurant reference for denormalization
                 .build()).toList();
         menu.setMenuItems(updatedItems);
     }

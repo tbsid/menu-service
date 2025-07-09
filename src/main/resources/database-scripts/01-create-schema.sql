@@ -39,17 +39,19 @@ CREATE INDEX idx_menu_restaurant ON menu (restaurant_id);
 -- ======= menu_item table =======
 CREATE TABLE menu_item
 (
-    id          BIGINT PRIMARY KEY AUTO_INCREMENT,
-    name        VARCHAR(255)   NOT NULL,
-    description VARCHAR(500),
-    price       DECIMAL(10, 2) NOT NULL,
-    status      VARCHAR(20)    NOT NULL,
-    food_type   VARCHAR(30)    NOT NULL,
-    category    VARCHAR(30)    NOT NULL,
-    image_url   VARCHAR(255),
-    menu_id     BIGINT         NOT NULL,
-    created_at  TIMESTAMP      NOT NULL,
-    updated_at  TIMESTAMP      NOT NULL,
+    id            BIGINT PRIMARY KEY AUTO_INCREMENT,
+    name          VARCHAR(255)   NOT NULL,
+    description   VARCHAR(500),
+    price         DECIMAL(10, 2) NOT NULL,
+    status        VARCHAR(20)    NOT NULL,
+    food_type     VARCHAR(30)    NOT NULL,
+    category      VARCHAR(30)    NOT NULL,
+    image_url     VARCHAR(255),
+    restaurant_id BIGINT         NOT NULL,
+    menu_id       BIGINT         NOT NULL,
+    created_at    TIMESTAMP      NOT NULL,
+    updated_at    TIMESTAMP      NOT NULL,
+    FOREIGN KEY (restaurant_id) REFERENCES restaurant (id) ON DELETE CASCADE,
     FOREIGN KEY (menu_id) REFERENCES menu (id) ON DELETE CASCADE
 );
 
