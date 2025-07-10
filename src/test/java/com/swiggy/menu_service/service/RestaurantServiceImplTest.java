@@ -25,7 +25,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 
 import java.math.BigDecimal;
@@ -131,47 +130,82 @@ class RestaurantServiceImplTest {
 
     @Test
     void testGetMenuByRestaurantId_ReturnsPaginatedMenus() {
+        // Arrange
         Long restaurantId = 1L;
         int page = 0;
-        int size = 1;
+        int size = 2;
 
+        // Create test restaurant
         Restaurant restaurant = getSampleRestaurantEntity();
         restaurant.setId(restaurantId);
 
-        Menu menu = getSampleMenuEntity();
-        menu.setRestaurant(restaurant);
-        menu.setId(10L);
+        // Create test menu
+        Menu menu = Menu.builder()
+                .id(10L)
+                .name("Lunch")
+                .description("Midday meal menu")
+                .status(MenuStatus.ACTIVE)
+                .restaurant(restaurant)
+                .build();
 
-        Page<Menu> menuPage = new PageImpl<>(List.of(menu));
+        // Create test menu items with both menu and restaurant references
+        MenuItem item1 = MenuItem.builder()
+                .id(100L)
+                .name("Paneer Tikka")
+                .description("Grilled paneer cubes with spices")
+                .price(BigDecimal.valueOf(250))
+                .status(MenuItemStatus.AVAILABLE)
+                .foodType(FoodType.VEG)
+                .category(Category.STARTER)
+                .menu(menu)
+                .restaurant(restaurant)
+                .build();
 
+        MenuItem item2 = MenuItem.builder()
+                .id(101L)
+                .name("Butter Chicken")
+                .description("Creamy chicken curry")
+                .price(BigDecimal.valueOf(350))
+                .status(MenuItemStatus.AVAILABLE)
+                .foodType(FoodType.NON_VEG)
+                .category(Category.MAIN_COURSE)
+                .menu(menu)
+                .restaurant(restaurant)
+                .build();
+
+        List<MenuItem> menuItems = List.of(item1, item2);
+        Page<MenuItem> menuItemPage = new PageImpl<>(menuItems, PageRequest.of(page, size), 2);
+
+        // Mock repository calls
         when(restaurantRepository.findById(restaurantId)).thenReturn(Optional.of(restaurant));
-        when(menuRepository.findByRestaurantId(eq(restaurantId), any(PageRequest.class))).thenReturn(menuPage);
-        when(restaurantMapper.createMenuResponseDtoList(menuPage.getContent())).thenReturn(List.of(getSampleMenuResponse()));
+        when(menuItemRepository.findByRestaurantIdAndActiveMenu(eq(restaurantId), any(PageRequest.class)))
+                .thenReturn(menuItemPage);
 
+        // Mock mapper for menu items to DTOs
+        List<MenuItemResponseDto> itemDtos = List.of(
+                new MenuItemResponseDto(100L, "Paneer Tikka", BigDecimal.valueOf(250), MenuItemStatus.AVAILABLE, FoodType.VEG, Category.STARTER),
+                new MenuItemResponseDto(101L, "Butter Chicken", BigDecimal.valueOf(350), MenuItemStatus.AVAILABLE, FoodType.NON_VEG, Category.MAIN_COURSE)
+        );
+        when(restaurantMapper.mapMenuItemsToResponseDto(menuItems)).thenReturn(itemDtos);
+
+        // Act
         RestaurantMenuResponseDto response = restaurantService.getMenuByRestaurantId(restaurantId, page, size);
 
+        // Assert
+        assertNotNull(response);
         assertEquals(restaurantId, response.getRestaurantId());
         assertEquals("Hotel ABC", response.getRestaurantName());
-        assertEquals(1, response.getMenus().size());
-    }
+        assertEquals(1, response.getMenus().size()); // Should have one menu
+        assertEquals(2, response.getMenus().get(0).getItems().size()); // Menu should have two items
+        assertEquals(0, response.getCurrentPage());
+        assertEquals(2, response.getPageSize());
+        assertEquals(2, response.getTotalElements());
+        assertEquals(1, response.getTotalPages());
 
-    private MenuResponseDto getSampleMenuResponse() {
-        MenuItemResponseDto itemDto = new MenuItemResponseDto(
-                100L,
-                "Paneer Tikka",
-                BigDecimal.valueOf(199),
-                MenuItemStatus.AVAILABLE,
-                FoodType.VEG,
-                Category.STARTER
-        );
-
-        return new MenuResponseDto(
-                10L,
-                "Lunch",
-                MenuStatus.ACTIVE,
-                "Midday meal menu",
-                List.of(itemDto)
-        );
+        // Verify repository calls
+        verify(restaurantRepository).findById(restaurantId);
+        verify(menuItemRepository).findByRestaurantIdAndActiveMenu(eq(restaurantId), any(PageRequest.class));
+        verify(restaurantMapper).mapMenuItemsToResponseDto(menuItems);
     }
 
 
@@ -243,4 +277,3 @@ class RestaurantServiceImplTest {
     }
 
 }
-

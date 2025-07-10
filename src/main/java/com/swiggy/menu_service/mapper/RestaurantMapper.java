@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class RestaurantMapper {
@@ -139,5 +140,12 @@ public class RestaurantMapper {
         item.setFoodType(request.getFoodType());
         item.setCategory(request.getCategory());
         item.setImageUrl(request.getImageUrl());
+    }
+
+    public List<MenuItemResponseDto> mapMenuItemsToResponseDto(List<MenuItem> items) {
+        log.info("Mapping list of menu items to response DTOs");
+        return items.stream()
+                .map(this::mapMenuItemToResponseDto)
+                .collect(Collectors.toList());
     }
 }

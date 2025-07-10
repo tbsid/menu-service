@@ -27,6 +27,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -73,17 +75,35 @@ public class RestaurantServiceImpl implements RestaurantService {
         Restaurant restaurant = restaurantRepository.findById(restaurantId)
                 .orElseThrow(() -> new ApplicationException(ValidationError.ENTITY_NOT_FOUND, "Restaurant not found with id: " + restaurantId));
 
-        Page<Menu> pagedMenus = menuRepository.findByRestaurantId(restaurantId, PageRequest.of(page, size));
-        List<MenuResponseDto> menuDtos = mapper.createMenuResponseDtoList(pagedMenus.getContent());
+        // Get paginated menu items directly using the denormalized structure
+        Page<MenuItem> pagedMenuItems = menuItemRepository.findByRestaurantIdAndActiveMenu(restaurantId, PageRequest.of(page, size));
+
+        // Group menu items by menu
+        Map<Long, List<MenuItem>> menuItemsByMenu = pagedMenuItems.getContent().stream()
+                .collect(Collectors.groupingBy(item -> item.getMenu().getId()));
+
+        // Create menu response DTOs
+        List<MenuResponseDto> menuDtos = menuItemsByMenu.entrySet().stream()
+                .map(entry -> {
+                    Menu menu = entry.getValue().get(0).getMenu(); // Get menu from any item in the group
+                    return new MenuResponseDto(
+                            menu.getId(),
+                            menu.getName(),
+                            menu.getStatus(),
+                            menu.getDescription(),
+                            mapper.mapMenuItemsToResponseDto(entry.getValue())
+                    );
+                })
+                .collect(Collectors.toList());
 
         return new RestaurantMenuResponseDto(
                 restaurant.getId(),
                 restaurant.getName(),
                 menuDtos,
-                pagedMenus.getNumber(),
-                pagedMenus.getSize(),
-                pagedMenus.getTotalElements(),
-                pagedMenus.getTotalPages()
+                pagedMenuItems.getNumber(),
+                pagedMenuItems.getSize(),
+                pagedMenuItems.getTotalElements(),
+                pagedMenuItems.getTotalPages()
         );
     }
 
